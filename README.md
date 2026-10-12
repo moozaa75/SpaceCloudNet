@@ -27,9 +27,19 @@
 
 整块文案集中在 `index.html` 的 `<!-- ===== 文案区（只改这里） ===== -->` 与 `<!-- ===== 文案区结束 ===== -->` 之间。约定：**属性存在但留空**（如 `data-en=""`）表示该语言下隐藏这个元素，由 CSS `:empty{display:none}` 负责收起，不会留下空白。
 
+当前生效文案：
+
+| 位置 | 中文 | English |
+|---|---|---|
+| 标题 | 太空云网 | SpaceCloudNet |
+| 标语 | 立足太空、服务全球 | Based in Space, Serving the World |
+| 说明 | 官方网站正在建设中，敬请期待。 | Website under construction. |
+| 联系 | `moozaa@163.com` | 同左 |
+
 - 默认语言按浏览器语言判断，用户手动切换后记在 `localStorage.scn-lang`。
-- 联系方式当前是 `moozaa75@163.com`，出现在 `mailto:` 链接和 `.addr` 文本里，改两处。
+- 联系方式出现在 `mailto:` 链接和 `.addr` 文本里，**改两处**。
 - 页脚年份由 JS 自动填充，不用手改。
+- 不想保留「建设中」那行小字，把 `.note` 的 `data-zh` / `data-en` 都留空即可自动隐藏。
 
 ## 动效设计
 
