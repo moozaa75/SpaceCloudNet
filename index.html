@@ -3,103 +3,512 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SpaceCloudNet</title>
-<meta name="description" content="SpaceCloudNet — 官方网站建设中。Our website is under construction.">
+<title>太空云网 · SpaceCloudNet</title>
+<meta name="description" content="太空云网 SpaceCloudNet — 官方网站建设中。Our website is under construction.">
 <link rel="canonical" href="https://spacecloudnet.com/">
-<meta name="theme-color" content="#070b16">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#05070f">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="SpaceCloudNet">
-<meta property="og:title" content="SpaceCloudNet">
+<meta property="og:site_name" content="太空云网 SpaceCloudNet">
+<meta property="og:title" content="太空云网 · SpaceCloudNet">
 <meta property="og:description" content="官方网站建设中 · Our website is under construction.">
 <meta property="og:url" content="https://spacecloudnet.com/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 :root{
-  --bg:#070b16; --fg:#e8eefc; --muted:#93a3c4; --line:#1f2b47;
-  --accent:#4f8cff; --accent2:#22d3ee; --card:rgba(255,255,255,.04);
-}
-@media (prefers-color-scheme: light){
-  :root{ --bg:#f6f8fd; --fg:#0d1526; --muted:#5a6b8c; --line:#dbe3f2; --card:rgba(255,255,255,.75); }
+  --bg:#05070f; --bg-soft:#0a1120;
+  --fg:#e9eeff; --muted:#93a4c8; --line:rgba(122,152,224,.20);
+  --accent:#5b8cff; --accent-2:#5ff0ff;
+  /* Canvas 调色板：JS 会读取这几个变量，改这里即可改星空配色 */
+  --fx-star:#8fa8d8; --fx-link:#4a7ae0; --fx-node:#9cc2ff;
+  --fx-packet:#8ff6ff; --fx-arc:#4fd6ff;
 }
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
-  margin:0; min-height:100vh; min-height:100svh; background:var(--bg); color:var(--fg);
-  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+  margin:0; background:var(--bg); color:var(--fg); overflow-x:hidden;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:72px 20px 40px; text-align:center; -webkit-font-smoothing:antialiased;
+  min-height:100vh; min-height:100svh; padding:76px 22px 40px; text-align:center;
 }
-.glow{position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(600px 300px at 50% 6%,rgba(79,140,255,.20),transparent 70%),
-             radial-gradient(520px 280px at 82% 92%,rgba(34,211,238,.13),transparent 70%);}
-.topbar{position:fixed;top:0;right:0;padding:16px 18px}
-.lang{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--fg);
-  border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;cursor:pointer}
-.lang:hover{border-color:var(--accent)}
-a{color:var(--accent)}
-.lang:focus-visible,.btn:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-main{position:relative;max-width:640px}
-.mark{width:76px;height:76px;margin-bottom:22px}
-h1{font-size:clamp(28px,6vw,44px);margin:0 0 12px;letter-spacing:-.02em;
-  background:linear-gradient(100deg,var(--fg),var(--accent) 62%,var(--accent2));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{margin:0 0 26px;color:var(--muted);font-size:clamp(15px,2.4vw,17px)}
-.contact{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin:0}
-.btn{display:inline-block;padding:10px 22px;border-radius:999px;text-decoration:none;color:#fff;
-  background:linear-gradient(100deg,var(--accent),var(--accent2));font-weight:600;font-size:14px}
-.btn:hover{filter:brightness(1.08)}
-.addr{color:var(--muted);font-size:14px}
-footer{position:relative;margin-top:56px;color:var(--muted);font-size:12.5px;
-  display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.sep{opacity:.5}
-.skip{position:absolute;left:-9999px}
-.skip:focus{left:16px;top:16px;background:var(--card);padding:8px 12px;border-radius:8px}
+#net{position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block}
+/* 中央压暗，保证文字在动态背景上始终清晰 */
+.scrim{position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(58% 46% at 50% 44%, rgba(5,7,15,.93), rgba(5,7,15,.58) 62%, rgba(5,7,15,0) 78%),
+    linear-gradient(180deg, rgba(5,7,15,.6), rgba(5,7,15,0) 32%, rgba(5,7,15,.66));
+}
+.topbar{position:fixed; top:0; right:0; z-index:3; padding:16px 18px; display:flex; gap:8px}
+.lang{appearance:none; border:1px solid var(--line); background:rgba(12,20,38,.66); color:var(--fg);
+  border-radius:999px; padding:7px 15px; font:inherit; font-size:13px; cursor:pointer;
+  backdrop-filter:blur(8px); transition:border-color .2s, background .2s}
+.lang:hover{border-color:var(--accent); background:rgba(20,32,60,.8)}
+main{position:relative; z-index:2; max-width:680px; width:100%}
+.mark{width:82px; height:82px; margin:0 auto 20px; display:block; filter:drop-shadow(0 0 18px rgba(91,140,255,.35))}
+h1{margin:0; font-size:clamp(34px,7.2vw,58px); line-height:1.12; letter-spacing:.02em; font-weight:700;
+  background:linear-gradient(102deg,#ffffff,var(--accent) 58%,var(--accent-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent}
+.latin{margin:10px 0 0; font-size:clamp(10.5px,1.7vw,12.5px); letter-spacing:.42em; text-transform:uppercase;
+  color:var(--muted); text-indent:.42em}
+.latin:empty{display:none}
+.rule{width:64px; height:1px; margin:24px auto; border:0;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:.75}
+.tagline{margin:0 auto 26px; max-width:34em; color:var(--muted); font-size:clamp(15px,2.3vw,17px)}
+.actions{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center}
+.btn{display:inline-block; padding:11px 24px; border-radius:999px; text-decoration:none; font-weight:600; font-size:14.5px;
+  color:#fff; background:linear-gradient(100deg,var(--accent),var(--accent-2));
+  box-shadow:0 8px 26px -10px rgba(91,140,255,.9); transition:transform .18s, filter .18s}
+.btn:hover{filter:brightness(1.09); transform:translateY(-1px)}
+.btn:focus-visible,.lang:focus-visible,a:focus-visible{outline:2px solid var(--accent-2); outline-offset:3px}
+.addr{color:var(--muted); font-size:14px}
+footer{position:relative; z-index:2; margin-top:54px; color:var(--muted); font-size:12.5px;
+  display:flex; gap:9px; flex-wrap:wrap; justify-content:center; align-items:center}
+footer .dot{opacity:.45}
+footer a{color:inherit}
+.skip{position:absolute; left:-9999px}
+.skip:focus{left:16px; top:16px; z-index:4; background:rgba(12,20,38,.9); padding:9px 14px; border-radius:9px}
+@media (prefers-reduced-motion: reduce){
+  .btn, .lang{transition:none}
+}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
-<div class="glow" aria-hidden="true"></div>
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+
 <header class="topbar">
   <button id="lang" class="lang" type="button" aria-label="Switch to English">EN</button>
 </header>
+
 <main id="main">
-  <img class="mark" src="favicon.svg" alt="SpaceCloudNet" width="76" height="76">
-  <h1>SpaceCloudNet</h1>
-  <p class="lead" data-zh="官方网站正在建设中，敬请期待。" data-en="Our website is under construction. Stay tuned.">官方网站正在建设中，敬请期待。</p>
-  <p class="contact">
+  <img class="mark" src="favicon.svg" alt="" width="82" height="82">
+  <!-- ===== 文案区（只改这里） ===== -->
+  <h1 data-zh="太空云网" data-en="SpaceCloudNet">太空云网</h1>
+  <p class="latin" data-zh="SPACECLOUDNET" data-en="">SPACECLOUDNET</p>
+  <hr class="rule">
+  <p class="tagline" data-zh="官方网站正在建设中，敬请期待。" data-en="Our website is under construction. Stay tuned.">官方网站正在建设中，敬请期待。</p>
+  <p class="actions">
     <a class="btn" href="mailto:moozaa75@163.com" data-zh="联系我们" data-en="Contact us">联系我们</a>
     <span class="addr">moozaa75@163.com</span>
   </p>
+  <!-- ===== 文案区结束 ===== -->
 </main>
+
 <footer>
   <span>© <span id="y">2026</span> SpaceCloudNet</span>
-  <span class="sep">·</span>
+  <span class="dot">·</span>
   <span>spacecloudnet.com</span>
-  <span class="sep">·</span>
+  <span class="dot">·</span>
   <span>spacecloudnet.cn</span>
 </footer>
+
 <script>
 (function () {
-  var KEY = 'scn-lang', btn = document.getElementById('lang');
-  function apply(lang) {
-    var en = lang === 'en';
-    document.documentElement.lang = en ? 'en' : 'zh-CN';
-    document.querySelectorAll('[data-zh]').forEach(function (el) {
-      var t = el.getAttribute(en ? 'data-en' : 'data-zh');
-      if (t) el.textContent = t;
-    });
-    btn.textContent = en ? '中文' : 'EN';
-    btn.setAttribute('aria-label', en ? '切换到中文' : 'Switch to English');
+  'use strict';
+
+  /* ============================================================
+     动效参数：想调手感只改这里
+     ============================================================ */
+  var T = {
+    speed: 1,               // 全局速度倍率
+    starDensity: 0.00012,   // 每平方像素星点数量
+    maxStars: 240,
+    nodesWide: 9,           // 宽屏节点数
+    nodesNarrow: 5,         // 窄屏节点数
+    linkRatio: 0.44,        // 连线距离 = min(W,H) * linkRatio
+    packetsWide: 14,        // 同时在链路上流动的数据点
+    packetsNarrow: 6,
+    pointerRadius: 190,     // 鼠标影响半径（px）
+    arcEveryMs: 8500,       // 每隔多久放出一条轨道数据弧线
+    maxArcs: 2
+  };
+
+  var canvas = document.getElementById('net');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var reduceQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  var W = 0, H = 0, DPR = 1;
+  var stars = [], nodes = [], links = [], packets = [], arcs = [];
+  var pointer = { x: 0, y: 0, on: false, smoothX: 0, smoothY: 0 };
+  var sprites = {}, PAL = {};
+  var rafId = 0, lastTime = 0, arcTimer = 0;
+
+  /* ---------- 颜色 ---------- */
+  function rgba(color, a) {
+    var v = (color || '').trim();
+    if (v.indexOf('rgb') === 0) {
+      var nums = v.match(/[\d.]+/g) || [];
+      if (nums.length >= 3) return 'rgba(' + nums[0] + ',' + nums[1] + ',' + nums[2] + ',' + a + ')';
+    }
+    var h = v.replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h.slice(0, 6), 16);
+    if (isNaN(n)) return 'rgba(120,160,255,' + a + ')';
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
   }
-  var saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (e) {}
-  apply(saved === 'en' || saved === 'zh' ? saved
-        : ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en'));
-  btn.addEventListener('click', function () {
-    var next = document.documentElement.lang === 'en' ? 'zh' : 'en';
-    apply(next);
-    try { localStorage.setItem(KEY, next); } catch (e) {}
+  function cssVar(name, fallback) {
+    var v = getComputedStyle(document.documentElement).getPropertyValue(name);
+    return (v && v.trim()) || fallback;
+  }
+  /* 预渲染光晕贴图：比每帧 shadowBlur 快一个量级 */
+  function glowSprite(color, alpha) {
+    var s = 64, c = document.createElement('canvas'), g;
+    c.width = c.height = s;
+    g = c.getContext('2d');
+    var grd = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    grd.addColorStop(0, rgba(color, alpha));
+    grd.addColorStop(0.32, rgba(color, alpha * 0.34));
+    grd.addColorStop(1, rgba(color, 0));
+    g.fillStyle = grd;
+    g.fillRect(0, 0, s, s);
+    return c;
+  }
+  function readPalette() {
+    PAL = {
+      star: cssVar('--fx-star', '#8fa8d8'),
+      link: cssVar('--fx-link', '#4a7ae0'),
+      node: cssVar('--fx-node', '#9cc2ff'),
+      packet: cssVar('--fx-packet', '#8ff6ff'),
+      arc: cssVar('--fx-arc', '#4fd6ff')
+    };
+    sprites.star = glowSprite(PAL.star, 0.85);
+    sprites.node = glowSprite(PAL.node, 1);
+    sprites.packet = glowSprite(PAL.packet, 1);
+  }
+
+  /* ---------- 场景 ---------- */
+  function buildScene() {
+    var i, n;
+    var starCount = Math.min(T.maxStars, Math.round(W * H * T.starDensity));
+    stars = [];
+    for (i = 0; i < starCount; i++) {
+      var layer = i % 3;
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.9 + layer * 0.75 + Math.random() * 0.6,
+        a: 0.16 + Math.random() * 0.5,
+        vx: (layer - 1) * 0.0075 * (0.7 + Math.random() * 0.6),
+        vy: (layer - 1) * 0.005 * (0.7 + Math.random() * 0.6),
+        tw: Math.random() * Math.PI * 2
+      });
+    }
+
+    n = W < 720 ? T.nodesNarrow : T.nodesWide;
+    nodes = [];
+    for (i = 0; i < n; i++) {
+      nodes.push({
+        x: W * (0.07 + Math.random() * 0.86),
+        y: H * (0.1 + Math.random() * 0.8),
+        vx: (Math.random() - 0.5) * 0.016,
+        vy: (Math.random() - 0.5) * 0.016,
+        r: 2.2 + Math.random() * 2.4,
+        glow: 0,
+        hub: i === 0
+      });
+    }
+
+    computeLinks();
+    packets = [];
+    var p = W < 720 ? T.packetsNarrow : T.packetsWide;
+    for (i = 0; i < p; i++) {
+      packets.push({ a: 0, b: 0, t: -Math.random(), speed: 0.0002 });
+      respawnPacket(packets[i], true);
+    }
+    arcs = [];
+    arcTimer = 0;
+  }
+
+  function computeLinks() {
+    links = [];
+    var maxD = Math.min(W, H) * T.linkRatio;
+    for (var i = 0; i < nodes.length; i++) {
+      for (var j = i + 1; j < nodes.length; j++) {
+        var dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < maxD) links.push({ i: i, j: j, d: d, maxD: maxD });
+      }
+    }
+  }
+
+  function respawnPacket(p, initial) {
+    if (!links.length) { p.t = -1; return; }
+    var l = links[Math.floor(Math.random() * links.length)];
+    p.a = l.i;
+    p.b = l.j;
+    p.t = initial ? Math.random() * 0.9 : -Math.random() * 0.35;
+    p.speed = 0.00019 + Math.random() * 0.00023;
+  }
+
+  function spawnArc() {
+    if (arcs.length >= T.maxArcs) return;
+    var base = Math.min(W, H);
+    arcs.push({
+      cx: W * (0.12 + Math.random() * 0.76),
+      cy: H * (0.22 + Math.random() * 0.56),
+      rx: base * (0.3 + Math.random() * 0.24),
+      ry: base * (0.1 + Math.random() * 0.11),
+      rot: -0.95 + Math.random() * 1.9,
+      t: -0.12 - Math.random() * 0.2,
+      speed: 0.00013 + Math.random() * 0.00011
+    });
+  }
+
+  /* ---------- 更新 ---------- */
+  function update(dt) {
+    var k = dt * T.speed, i, p;
+
+    for (i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      s.x += s.vx * k;
+      s.y += s.vy * k;
+      if (s.x < -4) s.x = W + 4; else if (s.x > W + 4) s.x = -4;
+      if (s.y < -4) s.y = H + 4; else if (s.y > H + 4) s.y = -4;
+    }
+
+    for (i = 0; i < nodes.length; i++) {
+      var nd = nodes[i];
+      nd.x += nd.vx * k;
+      nd.y += nd.vy * k;
+      if (nd.x < W * 0.05 || nd.x > W * 0.95) nd.vx *= -1;
+      if (nd.y < H * 0.07 || nd.y > H * 0.93) nd.vy *= -1;
+      var target = 0;
+      if (pointer.on) {
+        var dx = nd.x - pointer.x, dy = nd.y - pointer.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < T.pointerRadius) target = 1 - d / T.pointerRadius;
+      }
+      nd.glow += (target - nd.glow) * 0.085;
+    }
+
+    computeLinks();
+
+    for (i = 0; i < packets.length; i++) {
+      p = packets[i];
+      p.t += p.speed * k;
+      if (p.t > 1) respawnPacket(p, false);
+    }
+
+    arcTimer += k;
+    if (arcTimer > T.arcEveryMs) { arcTimer = 0; spawnArc(); }
+    for (i = arcs.length - 1; i >= 0; i--) {
+      arcs[i].t += arcs[i].speed * k;
+      if (arcs[i].t > 1.4) arcs.splice(i, 1);
+    }
+
+    pointer.smoothX += ((pointer.on ? pointer.x : W / 2) - pointer.smoothX) * 0.05;
+    pointer.smoothY += ((pointer.on ? pointer.y : H / 2) - pointer.smoothY) * 0.05;
+  }
+
+  /* ---------- 绘制 ---------- */
+  function render(now) {
+    var i, j, a;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.save();
+    ctx.translate((pointer.smoothX - W / 2) * -0.012, (pointer.smoothY - H / 2) * -0.012);
+
+    /* 星空 */
+    for (i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      var tw = 0.62 + 0.38 * Math.sin(now * 0.0011 + s.tw);
+      ctx.globalAlpha = s.a * tw;
+      var sz = s.r * 7;
+      ctx.drawImage(sprites.star, s.x - sz / 2, s.y - sz / 2, sz, sz);
+    }
+
+    /* 链路 */
+    ctx.globalAlpha = 1;
+    for (i = 0; i < links.length; i++) {
+      var l = links[i];
+      a = (1 - l.d / l.maxD);
+      ctx.strokeStyle = rgba(PAL.link, a * 0.5);
+      ctx.lineWidth = 0.7 + a * 0.7;
+      ctx.beginPath();
+      ctx.moveTo(nodes[l.i].x, nodes[l.i].y);
+      ctx.lineTo(nodes[l.j].x, nodes[l.j].y);
+      ctx.stroke();
+    }
+
+    /* 鼠标牵引线 */
+    if (pointer.on) {
+      for (i = 0; i < nodes.length; i++) {
+        if (nodes[i].glow < 0.06) continue;
+        ctx.strokeStyle = rgba(PAL.packet, nodes[i].glow * 0.5);
+        ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(pointer.x, pointer.y);
+        ctx.stroke();
+      }
+    }
+
+    /* 节点 */
+    for (i = 0; i < nodes.length; i++) {
+      var nd = nodes[i];
+      var halo = (nd.r * 7) * (1 + nd.glow * 1.1) * (nd.hub ? 1.5 : 1);
+      ctx.globalAlpha = (0.5 + nd.glow * 0.5) * (nd.hub ? 0.95 : 0.8);
+      ctx.drawImage(sprites.node, nd.x - halo / 2, nd.y - halo / 2, halo, halo);
+      ctx.globalAlpha = 0.75 + nd.glow * 0.25;
+      ctx.fillStyle = rgba(PAL.node, 0.95);
+      ctx.beginPath();
+      ctx.arc(nd.x, nd.y, nd.r * (1 + nd.glow * 0.25), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /* 链路上的数据点 */
+    for (i = 0; i < packets.length; i++) {
+      var pk = packets[i];
+      if (pk.t < 0 || pk.t > 1) continue;
+      var A = nodes[pk.a], B = nodes[pk.b];
+      if (!A || !B) continue;
+      var dx = A.x - B.x, dy = A.y - B.y;
+      if (dx * dx + dy * dy > Math.pow(Math.min(W, H) * T.linkRatio * 1.25, 2)) { respawnPacket(pk, false); continue; }
+      for (j = 2; j >= 0; j--) {
+        var tt = pk.t - j * 0.035;
+        if (tt < 0 || tt > 1) continue;
+        var px = A.x + (B.x - A.x) * tt;
+        var py = A.y + (B.y - A.y) * tt;
+        var ps = j === 0 ? 9 : 6 - j;
+        ctx.globalAlpha = j === 0 ? 0.95 : 0.3 - j * 0.08;
+        ctx.drawImage(sprites.packet, px - ps / 2, py - ps / 2, ps, ps);
+      }
+    }
+
+    /* 轨道数据弧线 */
+    for (i = 0; i < arcs.length; i++) {
+      var arc = arcs[i];
+      var fade = arc.t > 1 ? Math.max(0, (1.4 - arc.t) / 0.4) : Math.min(1, Math.max(0, arc.t * 4));
+      if (fade <= 0) continue;
+      ctx.save();
+      ctx.translate(arc.cx, arc.cy);
+      ctx.rotate(arc.rot);
+      var segs = 22, span = 0.2;
+      for (j = 0; j < segs; j++) {
+        var t0 = arc.t - span * (j + 1) / segs;
+        var t1 = arc.t - span * j / segs;
+        if (t0 < 0) continue;
+        ctx.strokeStyle = rgba(PAL.arc, (1 - j / segs) * 0.42 * fade);
+        ctx.lineWidth = 2.2 - 1.5 * (j / segs);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, arc.rx, arc.ry, 0, t0 * Math.PI * 2, t1 * Math.PI * 2);
+        ctx.stroke();
+      }
+      if (arc.t >= 0) {
+        var hx = Math.cos(arc.t * Math.PI * 2) * arc.rx;
+        var hy = Math.sin(arc.t * Math.PI * 2) * arc.ry;
+        ctx.globalAlpha = 0.9 * fade;
+        ctx.drawImage(sprites.packet, hx - 7, hy - 7, 14, 14);
+      }
+      ctx.restore();
+    }
+
+    ctx.restore();
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /* ---------- 循环与生命周期 ---------- */
+  function frame(now) {
+    rafId = window.requestAnimationFrame(frame);
+    var dt = Math.min(32, now - lastTime || 16);
+    lastTime = now;
+    if (document.hidden) return;
+    update(dt);
+    render(now);
+  }
+  function start() {
+    if (rafId || reduceQuery.matches) return;
+    lastTime = window.performance.now();
+    rafId = window.requestAnimationFrame(frame);
+  }
+  function stop() {
+    if (rafId) { window.cancelAnimationFrame(rafId); rafId = 0; }
+  }
+  function renderStill() {
+    stop();
+    render(window.performance.now());
+  }
+  function applyMotionPreference() {
+    if (reduceQuery.matches) renderStill(); else start();
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth || window.innerWidth;
+    H = canvas.clientHeight || window.innerHeight;
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    buildScene();
+    if (reduceQuery.matches) render(window.performance.now());
+  }
+
+  /* ---------- 交互 ---------- */
+  function onPointerMove(e) {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.on = true;
+  }
+  function onPointerLeave() { pointer.on = false; }
+
+  /* ---------- 语言切换 ---------- */
+  function initLang() {
+    var btn = document.getElementById('lang');
+    var KEY = 'scn-lang';
+    function apply(lang) {
+      var en = lang === 'en';
+      document.documentElement.lang = en ? 'en' : 'zh-CN';
+      var list = document.querySelectorAll('[data-zh]');
+      for (var i = 0; i < list.length; i++) {
+        var el = list[i];
+        var text = en ? el.getAttribute('data-en') : el.getAttribute('data-zh');
+        if (text !== null) el.textContent = text;
+      }
+      if (btn) {
+        btn.textContent = en ? '中文' : 'EN';
+        btn.setAttribute('aria-label', en ? '切换到中文' : 'Switch to English');
+      }
+    }
+    var saved = null;
+    try { saved = window.localStorage.getItem(KEY); } catch (err) { saved = null; }
+    apply(saved === 'en' || saved === 'zh' ? saved
+      : ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en'));
+    if (btn) {
+      btn.addEventListener('click', function () {
+        var next = document.documentElement.lang === 'en' ? 'zh' : 'en';
+        apply(next);
+        try { window.localStorage.setItem(KEY, next); } catch (err) { /* 隐私模式下忽略 */ }
+      });
+    }
+  }
+
+  /* ---------- 启动 ---------- */
+  readPalette();
+  resize();
+  initLang();
+  var yr = document.getElementById('y');
+  if (yr) yr.textContent = String(new Date().getFullYear());
+
+  pointer.smoothX = W / 2;
+  pointer.smoothY = H / 2;
+  if (hoverQuery.matches) {
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerleave', onPointerLeave, { passive: true });
+    window.addEventListener('blur', onPointerLeave);
+  }
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stop(); else start();
   });
-  document.getElementById('y').textContent = String(new Date().getFullYear());
+  if (reduceQuery.addEventListener) reduceQuery.addEventListener('change', applyMotionPreference);
+  else if (reduceQuery.addListener) reduceQuery.addListener(applyMotionPreference);
+
+  applyMotionPreference();
 })();
 </script>
 </body>

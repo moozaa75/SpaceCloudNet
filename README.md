@@ -57,3 +57,14 @@ git add -A; git commit -m "Update copy"; git push
 证书由 GitHub Pages 自动签发（Let's Encrypt），签发后需在仓库 **Settings → Pages** 勾选 *Enforce HTTPS*。GitHub Pages 服务器在境外，因此**无需 ICP 备案**。
 
 > 注意：即使域名解析正确，证书签发通常也要 1–15 分钟；在此期间访问会出现证书告警，属正常过程。
+
+## 默认地址为什么打不开
+
+绑定自定义域名后，`https://moozaa75.github.io/SpaceCloudNet/` 会返回 GitHub 的 **404 "Site not found"**——这是预期行为，不是配置错误。GitHub 只为**根域名 ↔ `www`** 之间自动建立跳转；项目站点的默认地址在设置了自定义域名后不再提供服务，访问一律走 `https://spacecloudnet.com/`。
+
+（依据：[About custom domains and GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) —— 文档只承诺 apex 与 www 之间的自动跳转。）
+
+## 建议的加固（可选）
+
+在 **Settings → Pages → Custom domain** 点 *Verify* 会给出一个 `_github-pages-challenge-moozaa75` 的 TXT 记录值，把它加到云解析可防止域名被其他 GitHub 账号抢注。当前两个域名的 `protected_domain_state` 为 `null`（未验证、也未处于风险状态）。
+

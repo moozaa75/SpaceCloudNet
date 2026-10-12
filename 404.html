@@ -3,23 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>页面不存在 · SpaceCloudNet</title>
+<title>页面不存在 · 太空云网</title>
 <meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#05070f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
-:root{ --bg:#070b16; --fg:#e8eefc; --muted:#93a3c4; --accent:#4f8cff; --accent2:#22d3ee; }
-@media (prefers-color-scheme: light){ :root{ --bg:#f6f8fd; --fg:#0d1526; --muted:#5a6b8c; } }
-body{margin:0;min-height:100vh;min-height:100svh;background:var(--bg);color:var(--fg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:40px 20px;text-align:center;
-  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif}
-h1{font-size:clamp(40px,10vw,72px);margin:0;letter-spacing:-.03em;
-  background:linear-gradient(100deg,var(--fg),var(--accent) 62%,var(--accent2));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-p{margin:0;color:var(--muted)}
-a{color:var(--accent);margin-top:14px}
+:root{ --bg:#05070f; --fg:#e9eeff; --muted:#93a4c8; --accent:#5b8cff; --accent-2:#5ff0ff; }
+body{
+  margin:0; min-height:100vh; min-height:100svh; overflow:hidden; background:var(--bg); color:var(--fg);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+  padding:40px 20px; text-align:center;
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.halo{position:fixed; inset:-20%; pointer-events:none;
+  background:radial-gradient(42% 34% at 50% 46%, rgba(91,140,255,.22), rgba(95,240,255,.07) 45%, transparent 72%);
+  animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.5; transform:scale(1)} 50%{opacity:1; transform:scale(1.07)}}
+img{width:72px; height:72px; opacity:.95; filter:drop-shadow(0 0 18px rgba(91,140,255,.35))}
+h1{position:relative; margin:0; font-size:clamp(46px,11vw,78px); letter-spacing:-.02em;
+  background:linear-gradient(102deg,#ffffff,var(--accent) 58%,var(--accent-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent}
+p{position:relative; margin:0; color:var(--muted)}
+a{position:relative; margin-top:16px; color:var(--accent-2)}
+a:focus-visible{outline:2px solid var(--accent-2); outline-offset:3px}
+@media (prefers-reduced-motion: reduce){ .halo{animation:none} }
 </style>
 </head>
 <body>
+  <div class="halo" aria-hidden="true"></div>
+  <img src="/favicon.svg" alt="" width="72" height="72">
   <h1>404</h1>
   <p>页面不存在 · Page not found</p>
   <a href="/">返回首页 · Back to home</a>
